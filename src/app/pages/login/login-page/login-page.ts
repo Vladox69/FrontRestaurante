@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { environment } from '../../../../environments/environment.development';
 import { Auth } from '../../../services/auth';
-import { Login } from '../../../interfaces/body/login.interface';
+import { LoginBody } from '../../../interfaces/body/login.interface';
 
 @Component({
   selector: 'app-login-page',
@@ -13,7 +13,7 @@ export class LoginPage {
   envs=environment;
   authService=inject(Auth);
   onLogin(){
-    const form:Login={
+    const form:LoginBody={
       email:this.envs.demoEmail,
       password:this.envs.demoPassword
     }
