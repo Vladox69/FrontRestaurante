@@ -1,0 +1,56 @@
+<div class="flex h-screen bg-gray-100">
+  <aside
+    class="bg-gray-800 text-white transition-all duration-300 ease-in-out"
+    [class.w-64]="isOpen"
+    [class.w-20]="!isOpen"
+    [class.-translate-x-full]="isMobile && !isOpen"
+  >
+    <div class="p-4 flex items-center justify-between border-b border-gray-700">
+      @if(isOpen) {
+        <h1 class="text-xl font-bold">Panel</h1>
+      }
+      <button
+        (click)="toggleSidebar()"
+        class="p-2 rounded-lg hover:bg-gray-700 transition-colors"
+        aria-label="Toggle sidebar"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          @if(isOpen) {
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          } @else {
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          }
+        </svg>
+      </button>
+    </div>
+    <nav class="mt-4">
+      @for (item of menuItems; track item.path) {
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="text-blue-400"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="flex items-center p-3 hover:bg-gray-600 transition-colors"
+        >
+          <span class="text-xl mr-3">{{ item.icon }}</span>
+          @if(isOpen) {
+            <span>{{ item.label }}</span>
+          }
+        </a>
+      }
+    </nav>
+  </aside>
+
+  <div class="flex-1 flex flex-col overflow-hidden">
+    <div class="bg-gray-600 text-white px-6 py-4 border-b border-gray-500 flex justify-between items-center">
+      <h2 class="text-lg font-semibold">Bienvenido</h2>
+      <div>
+        <span class="font-medium">Usuario:</span>
+        <span class="ml-2 font-semibold">{{ 'userName' }}</span>
+      </div>
+    </div>
+
+    <main class="flex-1 overflow-auto p-6">
+      <ng-content></ng-content>
+    </main>
+  </div>
+</div>

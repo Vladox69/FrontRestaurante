@@ -1,0 +1,32 @@
+/* Mobile First */
+@media (max-width: 768px) {
+  aside {
+    position: fixed;
+    z-index: 20;
+    height: 100vh;
+  }
+
+  /* Efecto overlay */
+  aside + main::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  aside.-translate-x-full + main::before {
+    opacity: 0;
+  }
+
+  aside:not(.-translate-x-full) + main::before {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

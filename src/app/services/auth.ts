@@ -4,9 +4,9 @@ import { LoginBody } from '../interfaces/body/login.interface';
 import { environment } from '../../environments/environment.development';
 import { LoginResponse } from '../interfaces/response/login-response.interface';
 import { jwtDecode } from 'jwt-decode';
-import { DECODED_TOKEN_KEY, TOKEN_KEY, USER_KEY } from '../config/config';
-import { User } from '../interfaces/data/user.interface';
+import { DECODED_TOKEN_KEY, TOKEN_KEY } from '../config/config';
 import { DecodedToken } from '../interfaces/data/decoded-token.interface';
+import { map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -16,14 +16,9 @@ export class Auth {
   private _http = inject(HttpClient);
 
   login(login: LoginBody) {
-    this._http
+    return this._http
       .post<LoginResponse>(`${this.envs.baseURL}user/login`, login)
-      .subscribe({
-        next: (value) => {
-          const {data}=value;
-          this.validateToken(data);
-        },
-      });
+      .pipe(map(({ data }) => data));
   }
 
   decodeToken(token: string) {
@@ -46,6 +41,18 @@ export class Auth {
     const token = localStorage.getItem(TOKEN_KEY);
     if (token == null) return '';
     return token;
+  }
+
+  getDecodedToken(): DecodedToken | null {
+    const rawToken = localStorage.getItem(DECODED_TOKEN_KEY);
+    if (!rawToken) {
+      return null;
+    }
+    try {
+      return JSON.parse(rawToken) as DecodedToken;
+    } catch (error) {
+      return null;
+    }
   }
 
   validateToken(token: string) {
