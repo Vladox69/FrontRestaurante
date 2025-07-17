@@ -35,7 +35,10 @@ export class LoginPage {
       )
       .subscribe({
         next: (value) => {
-          this.router.navigate(['waiter'])
+          this.businessService.saveBusinessLocalStorage(value);
+          this.businessService.business.set(value);
+          const role = this.authService.getDecodedToken()?.role;
+          this.router.navigate([role]);
         },
       });
   }

@@ -3,6 +3,6 @@ export interface Product{
   name?:string;
   description?:string;
   price?:number;
-  category?:string;
+  category_id?:number;
   business_id?:number;
 }

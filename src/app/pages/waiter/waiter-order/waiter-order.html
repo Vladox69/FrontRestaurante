@@ -1,1 +1,21 @@
-<p>waiter-order works!</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <!-- Columna de Categorías -->
+  <div class="bg-gray-100 p-4 rounded shadow">
+    <h2 class="text-lg font-semibold mb-2">Categorías</h2>
+    <ul class="space-y-2">
+      @for (category of categoryResource.value(); track category.id) {
+        <li class="p-2 bg-white rounded border">{{ category.name }}</li>
+      }
+    </ul>
+  </div>
+
+  <!-- Columna de Productos -->
+  <div class="bg-gray-100 p-4 rounded shadow">
+    <h2 class="text-lg font-semibold mb-2">Productos</h2>
+    <ul class="space-y-2">
+      @for (product of productResource.value(); track product.id) {
+        <li class="p-2 bg-white rounded border">{{ product.name }}</li>
+      }
+    </ul>
+  </div>
+</div>

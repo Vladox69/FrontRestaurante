@@ -16,7 +16,7 @@ export class Sidebar {
   }
 
   menuItems = [
-    { path: '/', icon: '📊', label: 'Dashboard' },
+    { path: '/waiter', icon: '📊', label: 'Dashboard' },
     { path: 'orders', icon: '🛍️', label: 'Productos' },
     { path: 'users', icon: '👥', label: 'Usuarios' },
     { path: 'settings', icon: '⚙️', label: 'Configuración' },
