@@ -1,21 +1,31 @@
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-  <!-- Columna de Categorías -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <!-- Columna izquierda: Selección de productos -->
   <div class="bg-gray-100 p-4 rounded shadow">
-    <h2 class="text-lg font-semibold mb-2">Categorías</h2>
-    <ul class="space-y-2">
-      @for (category of categoryResource.value(); track category.id) {
-        <li class="p-2 bg-white rounded border">{{ category.name }}</li>
+    <h2 class="text-lg font-semibold mb-4">Categorías</h2>
+    <div class="flex flex-wrap gap-2">
+      <button
+        class="px-3 py-1 rounded border bg-white hover:bg-blue-100"
+        (click)="selectedCategoryId.set(null)">
+        Todo
+      </button>
+      @for (cat of categoryResource.value(); track cat.id) {
+        <button
+          class="px-3 py-1 rounded border bg-white hover:bg-blue-100"
+          (click)="selectedCategoryId.set(cat.id!)">
+          {{ cat.name }}
+        </button>
       }
-    </ul>
+    </div>
+
+    <h2 class="text-lg font-semibold mt-6 mb-4">Productos</h2>
+    <shared-product-list [products]="filteredProducts()" [isLoading]="productResource.isLoading()" />
   </div>
 
-  <!-- Columna de Productos -->
-  <div class="bg-gray-100 p-4 rounded shadow">
-    <h2 class="text-lg font-semibold mb-2">Productos</h2>
-    <ul class="space-y-2">
-      @for (product of productResource.value(); track product.id) {
-        <li class="p-2 bg-white rounded border">{{ product.name }}</li>
-      }
-    </ul>
+  <!-- Columna derecha: Resumen del pedido -->
+  <div class="bg-gray-100 p-4 rounded shadow h-[500px] overflow-auto">
+    <h2 class="text-lg font-semibold mb-4">Resumen del pedido</h2>
+    @for (order of orderService.order(); track order.product_id) {
+      <shared-product-line-item [orderItem]="order" />
+    }
   </div>
 </div>

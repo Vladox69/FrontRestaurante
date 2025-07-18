@@ -1,0 +1,22 @@
+<div
+  class="bg-white rounded shadow p-4 flex flex-col items-start text-left h-[275px] transform transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+  (click)="addToOrder()"
+  >
+  <div class="w-full h-32 bg-gray-200 mb-2 rounded overflow-hidden">
+    <img
+      src="assets/prod.jpeg"
+      alt="{{ product().name }}"
+      class="w-full h-full object-cover rounded"
+    />
+  </div>
+
+  <h3 class="text-md font-semibold mb-1 leading-tight line-clamp-1">
+    {{ product().name }}
+  </h3>
+
+  <p
+    class="text-sm text-gray-600 mb-2 leading-snug overflow-hidden text-ellipsis line-clamp-5"
+  >
+    {{ product().description }}
+  </p>
+</div>

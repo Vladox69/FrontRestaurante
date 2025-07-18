@@ -1,0 +1,11 @@
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-[500px] overflow-auto p-2">
+  @if(isLoading()){
+    <div class="col-span-1 sm:col-span-2 lg:col-span-3 flex justify-center items-center">
+      <p class="text-gray-500">Cargando productos...</p>
+    </div>
+  }
+  <!--  -->
+  @for (product of products(); track product.id) {
+  <shared-product-item [product]="product" />
+  }
+</div>

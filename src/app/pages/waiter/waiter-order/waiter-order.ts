@@ -1,22 +1,24 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { BusinessService } from '../../../services/business-service';
-import { Auth } from '../../../services/auth';
 import { ProductService } from '../../../services/product-service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { CategoryService } from '../../../services/category-service';
 import { of } from 'rxjs';
+import { ProductList } from "../../../components/shared/product-list/product-list";
+import { OrderService } from '../../../services/order-service';
+import { ProductLineItem } from "../../../components/shared/product-line-item/product-line-item";
 
 @Component({
   selector: 'app-waiter-order',
-  imports: [],
+  imports: [ProductList, ProductLineItem],
   templateUrl: './waiter-order.html',
   styleUrl: './waiter-order.css',
 })
 export class WaiterOrder implements OnInit {
   businessService = inject(BusinessService);
-  authService = inject(Auth);
   productService = inject(ProductService);
   categoryService = inject(CategoryService);
+  orderService = inject(OrderService);
   categoryResource = rxResource({
     defaultValue: [],
     stream: () => {
@@ -28,20 +30,23 @@ export class WaiterOrder implements OnInit {
       return this.categoryService.getCategories();
     },
   });
-
   productResource = rxResource({
     defaultValue: [],
     params: () => ({ id: this.businessService.business()?.id }),
-    stream: ({params}) => {
+    stream: ({ params }) => {
       if (this.productService.hasProducts()) {
-        console.log('Using cached products');
         return of(this.productService.products());
       }
-      console.log('Fetching products for business ID:', params.id);
       return this.productService.getProductsByBusinessId(params.id!);
-    }
-  })
-
+    },
+  });
+  selectedCategoryId = signal<number | null>(null);
+  filteredProducts = computed(() => {
+    const allProducts = this.productResource.value();
+    const selectedId = this.selectedCategoryId();
+    return selectedId
+      ? allProducts.filter((p) => p.category_id === selectedId)
+      : allProducts;
+  });
   ngOnInit() {}
-
 }
