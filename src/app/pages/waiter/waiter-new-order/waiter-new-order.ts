@@ -4,29 +4,47 @@ import { ProductService } from '../../../services/product-service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { CategoryService } from '../../../services/category-service';
 import { of } from 'rxjs';
-import { ProductList } from "../../../components/shared/product-list/product-list";
+import { ProductList } from '../../../components/shared/product-list/product-list';
 import { OrderService } from '../../../services/order-service';
-import { ProductLineItem } from "../../../components/shared/product-line-item/product-line-item";
+import { ProductLineItem } from '../../../components/shared/product-line-item/product-line-item';
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-waiter-order',
-  imports: [ProductList, ProductLineItem],
-  templateUrl: './waiter-order.html',
-  styleUrl: './waiter-order.css',
+  selector: 'restaurant-waiter-new-orders',
+  imports: [ProductList, ProductLineItem, NgClass],
+  templateUrl: './waiter-new-order.html',
+  styleUrl: './waiter-new-order.css',
 })
-export class WaiterOrder implements OnInit {
+export class WaiterNewOrder {
   businessService = inject(BusinessService);
   productService = inject(ProductService);
   categoryService = inject(CategoryService);
   orderService = inject(OrderService);
+  selectedCategoryId = signal<number | null>(null);
+  filteredProducts = computed(() => {
+    const allProducts = this.productResource.value();
+    const selectedId = this.selectedCategoryId();
+    return selectedId
+      ? allProducts.filter((p) => p.category_id === selectedId)
+      : allProducts;
+  });
+  total = computed(() => {
+    return this.orderService
+      .order()
+      .reduce((acc, item) => {
+        const product = this.productService
+          .products()
+          .find((p) => p.id === item.product_id);
+        return acc + (product ? product.price! * item.quantity! : 0);
+      }, 0)
+      .toFixed(2);
+  });
   categoryResource = rxResource({
     defaultValue: [],
     stream: () => {
       if (this.categoryService.hasCategories()) {
-        console.log('Using cached categories');
         return of(this.categoryService.categories());
       }
-      console.log('Fetching categories');
       return this.categoryService.getCategories();
     },
   });
@@ -40,13 +58,9 @@ export class WaiterOrder implements OnInit {
       return this.productService.getProductsByBusinessId(params.id!);
     },
   });
-  selectedCategoryId = signal<number | null>(null);
-  filteredProducts = computed(() => {
-    const allProducts = this.productResource.value();
-    const selectedId = this.selectedCategoryId();
-    return selectedId
-      ? allProducts.filter((p) => p.category_id === selectedId)
-      : allProducts;
-  });
-  ngOnInit() {}
+
+  finishOrder(){
+    console.log("Finalizando orden");
+  }
+
 }

@@ -1,0 +1,54 @@
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="bg-gray-100 p-4 rounded shadow">
+    <h2 class="text-lg font-semibold mb-4">Categorías</h2>
+    <div class="flex flex-wrap gap-2">
+      <button
+        class="px-3 py-1 rounded border bg-white hover:bg-blue-100"
+        (click)="selectedCategoryId.set(null)"
+      >
+        Todo
+      </button>
+      @for (cat of categoryResource.value(); track cat.id) {
+      <button
+        class="px-3 py-1 rounded border bg-white hover:bg-blue-100"
+        (click)="selectedCategoryId.set(cat.id!)"
+      >
+        {{ cat.name }}
+      </button>
+      }
+    </div>
+
+    <h2 class="text-lg font-semibold mt-6 mb-4">Productos</h2>
+    <shared-product-list
+      [products]="filteredProducts()"
+      [isLoading]="productResource.isLoading()"
+    />
+  </div>
+
+  <div class="bg-gray-100 p-4 rounded shadow">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-lg font-semibold mb-4">Pedido</h2>
+      <button
+      class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-500"
+      [ngClass]="{'bg-gray-400 hover:bg-gray-400': !orderService.hasItems()}"
+      [disabled]="!orderService.hasItems()"
+      (click)="finishOrder()"
+      >
+        Terminar Orden
+      </button>
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <p>Total {{ total() }}</p>
+    </div>
+    <h2 class="text-lg font-semibold mt-6 mb-4">Productos</h2>
+    <div class="h-[500px] overflow-auto p-2">
+      @if(orderService.order().length === 0) {
+      <p class="text-gray-500">No hay productos en el pedido.</p>
+      }
+      <!--  -->
+      @for (order of orderService.order(); track order.product_id) {
+      <shared-product-line-item [orderItem]="order" />
+      }
+    </div>
+  </div>
+</div>
