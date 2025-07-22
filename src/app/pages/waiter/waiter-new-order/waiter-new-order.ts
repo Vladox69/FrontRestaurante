@@ -8,6 +8,7 @@ import { ProductList } from '../../../components/shared/product-list/product-lis
 import { OrderService } from '../../../services/order-service';
 import { ProductLineItem } from '../../../components/shared/product-line-item/product-line-item';
 import { NgClass } from '@angular/common';
+import { StoreService } from '../../../services/store-service';
 
 @Component({
   selector: 'restaurant-waiter-new-orders',
@@ -16,10 +17,10 @@ import { NgClass } from '@angular/common';
   styleUrl: './waiter-new-order.css',
 })
 export class WaiterNewOrder {
-  businessService = inject(BusinessService);
   productService = inject(ProductService);
   categoryService = inject(CategoryService);
   orderService = inject(OrderService);
+  storeService = inject(StoreService);
   selectedCategoryId = signal<number | null>(null);
   filteredProducts = computed(() => {
     const allProducts = this.productResource.value();
@@ -27,17 +28,6 @@ export class WaiterNewOrder {
     return selectedId
       ? allProducts.filter((p) => p.category_id === selectedId)
       : allProducts;
-  });
-  total = computed(() => {
-    return this.orderService
-      .order()
-      .reduce((acc, item) => {
-        const product = this.productService
-          .products()
-          .find((p) => p.id === item.product_id);
-        return acc + (product ? product.price! * item.quantity! : 0);
-      }, 0)
-      .toFixed(2);
   });
   categoryResource = rxResource({
     defaultValue: [],
@@ -50,7 +40,7 @@ export class WaiterNewOrder {
   });
   productResource = rxResource({
     defaultValue: [],
-    params: () => ({ id: this.businessService.business()?.id }),
+    params: () => ({ id: this.storeService.business()?.id }),
     stream: ({ params }) => {
       if (this.productService.hasProducts()) {
         return of(this.productService.products());
@@ -60,7 +50,14 @@ export class WaiterNewOrder {
   });
 
   finishOrder(){
-    console.log("Finalizando orden");
+    this.orderService.createOrder().subscribe({
+      next: (order) => {
+        console.log("Orden finalizada:", order);
+      },
+      error: (error) => {
+        console.error("Error al finalizar la orden:", error);
+      }
+    })
   }
 
 }

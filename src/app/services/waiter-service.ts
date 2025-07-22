@@ -1,20 +1,20 @@
-import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { LoginBody } from '../interfaces/body/login.interface';
 import { environment } from '../../environments/environment.development';
-import { LoginResponse } from '../interfaces/response/login-response.interface';
+import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs';
+import { WaiterResponse } from '../interfaces/response/waiter-response.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class Auth {
+export class WaiterService {
   private envs = environment;
   private _http = inject(HttpClient);
+  private url = `${this.envs.baseURL}waiter/`;
 
-  login(login: LoginBody) {
+  getWaitersByUserId(id: number) {
     return this._http
-      .post<LoginResponse>(`${this.envs.baseURL}user/login`, login)
+      .get<WaiterResponse>(`${this.url}${id}`)
       .pipe(map(({ data }) => data));
   }
 }

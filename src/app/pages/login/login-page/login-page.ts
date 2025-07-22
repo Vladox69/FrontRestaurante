@@ -5,6 +5,7 @@ import { LoginBody } from '../../../interfaces/body/login.interface';
 import { BusinessService } from '../../../services/business-service';
 import { switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { StoreService } from '../../../services/store-service';
 
 @Component({
   selector: 'app-login-page',
@@ -16,6 +17,7 @@ export class LoginPage {
   envs = environment;
   authService = inject(Auth);
   businessService = inject(BusinessService);
+  storeService = inject(StoreService);
   router = inject(Router);
   onLogin() {
     const form: LoginBody = {
@@ -25,19 +27,20 @@ export class LoginPage {
     this.authService
       .login(form)
       .pipe(
-        tap((value) => this.authService.validateToken(value)),
+        tap((value) => this.storeService.validateToken(value)),
         switchMap(() => {
           const boss_id = parseInt(
-            this.authService.getDecodedToken()?.boss_id!
+            this.storeService.getDecodedToken()?.boss_id!
           );
-          return this.businessService.getBusinessByUserId(boss_id);
+          return this.businessService.getBusinessByUserId(boss_id).pipe(
+            tap((value) => this.storeService.business.set(value)),
+            tap((value) => this.storeService.saveBusinessLocalStorage(value))
+          );
         })
       )
       .subscribe({
         next: (value) => {
-          this.businessService.saveBusinessLocalStorage(value);
-          this.businessService.business.set(value);
-          const role = this.authService.getDecodedToken()?.role;
+          const role = this.storeService.getDecodedToken()?.role;
           this.router.navigate([role]);
         },
       });

@@ -1,13 +1,39 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { OrderItem } from '../interfaces/data/order-item.interface';
 import { Product } from '../interfaces/data/product.interface';
+import { Order } from '../interfaces/data/order.interface';
+import { Table } from '../interfaces/data/table.interface';
+import { OrderBody } from '../interfaces/body/order-body.interface';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment.development';
+import { OrderResponse } from '../interfaces/response/order-response.interface';
+import { map } from 'rxjs';
+import { StoreService } from './store-service';
+import { ProductService } from './product-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class OrderService {
+  private envs = environment;
+  private _http = inject(HttpClient);
+  private url = `${this.envs.baseURL}order/`;
+  private store = inject(StoreService);
+  private productService = inject(ProductService);
   order = signal<OrderItem[]>([]);
+  table = signal<Table | null>(null);
   hasItems = computed(() => this.order().length > 0);
+  total = computed(() => {
+    return this
+      .order()
+      .reduce((acc, item) => {
+        const product = this.productService
+          .products()
+          .find((p) => p.id === item.product_id);
+        return acc + (product ? product.price! * item.quantity! : 0);
+      }, 0)
+      .toFixed(2);
+  });
   addToOrder(product: Product) {
     const index = this.order().findIndex((i) => i.product_id === product.id);
 
@@ -26,7 +52,7 @@ export class OrderService {
     } else {
       this.order.update((currentOrder) => [
         ...currentOrder,
-        { product_id: product.id, quantity: 1 } as OrderItem,
+        { product_id: product.id, quantity: 1 ,status: 'in-progress'} as OrderItem,
       ]);
     }
   }
@@ -52,5 +78,21 @@ export class OrderService {
     this.order.update((currentOrder) =>
       currentOrder.filter((item) => item.product_id !== id)
     );
+  }
+
+  createOrder() {
+    const newOrder: Order = {
+      status: 'in-progress',
+      total: parseFloat(this.total()),
+      waiter_id: this.store.waiter()?.id,
+      table_id: 1,
+    };
+    const body: OrderBody = {
+      order: newOrder,
+      items: this.order(),
+    };
+    return this._http
+      .post<OrderResponse>(`${this.url}create-order`, body)
+      .pipe(map(({ data }) => data));
   }
 }
