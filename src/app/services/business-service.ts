@@ -10,7 +10,7 @@ import { BusinessResponse } from '../interfaces/response/business-response.inter
 export class BusinessService {
   private envs = environment;
   private _http = inject(HttpClient);
-  private url = `${this.envs.baseURL}business/`;
+  private url = `${this.envs.baseURL}/api/business/`;
 
   getBusinessByUserId(id: number) {
     return this._http.get<BusinessResponse>(`${this.url}user/${id}`).pipe(

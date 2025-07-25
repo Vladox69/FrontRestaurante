@@ -11,7 +11,7 @@ import { Category } from '../interfaces/data/category.interface';
 export class CategoryService {
   private envs = environment;
   private _http = inject(HttpClient);
-  private url = `${this.envs.baseURL}category/`;
+  private url = `${this.envs.baseURL}/api/category/`;
   public categories = signal<Category[]>([]);
   public hasCategories = computed<boolean>(() => this.categories().length > 0);
   getCategories() {

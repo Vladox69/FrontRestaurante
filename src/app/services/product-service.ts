@@ -11,7 +11,7 @@ import { Product } from '../interfaces/data/product.interface';
 export class ProductService {
   private envs = environment;
   private _http = inject(HttpClient);
-  private url = `${this.envs.baseURL}product/`;
+  private url = `${this.envs.baseURL}/api/product/`;
   public products = signal<Product[]>([]);
   public hasProducts = computed<boolean>(() => this.products().length > 0);
 

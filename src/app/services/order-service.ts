@@ -17,7 +17,7 @@ import { ProductService } from './product-service';
 export class OrderService {
   private envs = environment;
   private _http = inject(HttpClient);
-  private url = `${this.envs.baseURL}order/`;
+  private url = `${this.envs.baseURL}/api/order/`;
   private store = inject(StoreService);
   private productService = inject(ProductService);
   order = signal<OrderItem[]>([]);

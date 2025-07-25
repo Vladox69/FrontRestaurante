@@ -6,10 +6,11 @@ import { BusinessService } from '../../../services/business-service';
 import { switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { StoreService } from '../../../services/store-service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-login-page',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
@@ -19,11 +20,26 @@ export class LoginPage {
   businessService = inject(BusinessService);
   storeService = inject(StoreService);
   router = inject(Router);
+  options = ['MARCELO TUASA - MESERO', 'MATEO LLERENA - MESERO', 'COCINA COMMA'];
+  selectedOption = '-';
   onLogin() {
     const form: LoginBody = {
-      email: this.envs.demoEmail,
+      email: "",
       password: this.envs.demoPassword,
     };
+
+    switch(this.selectedOption){
+      case 'MARCELO TUASA - MESERO':
+        form.email = this.envs.demoWMarceloEmail;
+        break;
+      case 'MATEO LLERENA - MESERO':
+        form.email = this.envs.demoWMateoEmail;
+        break;
+      case 'COCINA COMMA':
+        form.email = this.envs.demoWCocinaEmail;
+        break;
+    }
+
     this.authService
       .login(form)
       .pipe(

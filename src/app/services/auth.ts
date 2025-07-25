@@ -14,7 +14,7 @@ export class Auth {
 
   login(login: LoginBody) {
     return this._http
-      .post<LoginResponse>(`${this.envs.baseURL}user/login`, login)
+      .post<LoginResponse>(`${this.envs.baseURL}/api/user/login`, login)
       .pipe(map(({ data }) => data));
   }
 }

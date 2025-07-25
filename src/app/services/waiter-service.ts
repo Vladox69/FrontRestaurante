@@ -10,7 +10,7 @@ import { WaiterResponse } from '../interfaces/response/waiter-response.interface
 export class WaiterService {
   private envs = environment;
   private _http = inject(HttpClient);
-  private url = `${this.envs.baseURL}waiter/`;
+  private url = `${this.envs.baseURL}/api/waiter/`;
 
   getWaitersByUserId(id: number) {
     return this._http
