@@ -20,13 +20,6 @@ export class RestaurantSignalRService {
       return Promise.resolve();
     }
     const token = this.storeService.getToken();
-    const user = this.storeService.decoded();
-
-    this.hubConnection = new signalR.HubConnectionBuilder()
-      .withUrl(`${this.url}`)
-      .withAutomaticReconnect()
-      .build();
-
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(this.url, {
         accessTokenFactory: () => token,

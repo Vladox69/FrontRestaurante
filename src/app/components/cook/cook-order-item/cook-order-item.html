@@ -1,0 +1,25 @@
+<div
+  class="bg-white rounded shadow p-4 flex flex-col items-start text-left h-[250] transform transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
+  (click)="orderService.orderSelected.set(order())"
+  >
+  <div class="flex gap-1">
+    <h3>Orden # {{ order().id }}</h3>
+    @if(table()){
+    <h5 class="text-gray-400">Mesa {{ table().table_number }}</h5>
+    }
+  </div>
+  <h3>
+    Estado:
+    <span
+      [ngClass]="{
+        'text-black': order().status == 'pending',
+        'text-red-600': order().status == 'in-progress',
+        'text-amber-600': order().status == 'ready',
+        'text-green-600': order().status == 'delivered'
+      }"
+    >
+      {{ order().status }}</span
+    >
+  </h3>
+  <h3>Total {{ order().total }}</h3>
+</div>

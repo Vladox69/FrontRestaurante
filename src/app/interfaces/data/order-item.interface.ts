@@ -3,5 +3,6 @@ export interface OrderItem {
   order_id?: number;
   product_id?: number;
   quantity?: number;
-  status?: 'in-progress' | 'ready' | 'delivered' | 'cancelled';
+  quantity_auxiliar?: number;
+  status?: 'pending'|'in-progress' | 'ready' | 'delivered';
 }

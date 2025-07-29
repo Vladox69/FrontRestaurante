@@ -6,7 +6,7 @@ import { Table } from '../interfaces/data/table.interface';
 import { OrderBody } from '../interfaces/body/order-body.interface';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
-import { OrderResponse } from '../interfaces/response/order-response.interface';
+import { OrderListResponse, OrderResponse } from '../interfaces/response/order-response.interface';
 import { map } from 'rxjs';
 import { StoreService } from './store-service';
 import { ProductService } from './product-service';
@@ -20,9 +20,12 @@ export class OrderService {
   private url = `${this.envs.baseURL}/api/order/`;
   private store = inject(StoreService);
   private productService = inject(ProductService);
+  orders = signal<Order[]>([]);
   order = signal<OrderItem[]>([]);
   table = signal<Table | null>(null);
+  orderSelected = signal<Order|null>(null);
   hasItems = computed(() => this.order().length > 0);
+  hasOrders = computed(() => this.orders().length > 0);
   total = computed(() => {
     return this
       .order()
@@ -95,4 +98,11 @@ export class OrderService {
       .post<OrderResponse>(`${this.url}create-order`, body)
       .pipe(map(({ data }) => data));
   }
+
+  getOrdersByBusinessId(id:number){
+    return this._http.get<OrderListResponse>(`${this.url}business/${id}`).pipe(
+      map(({ data }) => data)
+    )
+  }
+
 }

@@ -48,6 +48,7 @@ export class LoginPage {
           const boss_id = parseInt(
             this.storeService.getDecodedToken()?.boss_id!
           );
+          this.storeService.decoded.set(this.storeService.getDecodedToken())
           return this.businessService.getBusinessByUserId(boss_id).pipe(
             tap((value) => this.storeService.business.set(value)),
             tap((value) => this.storeService.saveBusinessLocalStorage(value))

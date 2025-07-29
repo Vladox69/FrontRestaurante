@@ -4,6 +4,12 @@ import { StoreService } from '../../../services/store-service';
 import { RestaurantSignalRService } from '../../../services/restaurant-signalr-service';
 import { Subscription } from 'rxjs';
 
+interface MenuItem{
+  path:string;
+  icon:string;
+  label:string;
+}
+
 @Component({
   selector: 'shared-sidebar',
   imports: [RouterLink, RouterLinkActive],
@@ -17,10 +23,15 @@ export class Sidebar implements OnInit, OnDestroy {
   storeService = inject(StoreService);
   signalRSerice = inject(RestaurantSignalRService);
   role = this.storeService.decoded()?.role;
-  menuItems =
-    this.role === 'waiter'
-      ? [
-          { path: '/waiter', icon: '📊', label: 'Dashboard' },
+  menuItems: MenuItem[] = [];
+  toggleSidebar() {
+    this.isOpen = !this.isOpen;
+  }
+  ngOnInit(): void {
+    if (this.role) {
+      this.menuItems = this.role === 'waiter'
+        ? [
+            { path: '/waiter', icon: '📊', label: 'Dashboard' },
           { path: 'new-order', icon: '🛍️', label: 'Nueva Orden' },
           { path: 'orders', icon: '👥', label: 'Ordenes' },
         ]
@@ -28,10 +39,7 @@ export class Sidebar implements OnInit, OnDestroy {
           { path: '/cook', icon: '📊', label: 'Dashboard' },
           { path: 'order', icon: '🛍️', label: 'Orden' },
         ];
-  toggleSidebar() {
-    this.isOpen = !this.isOpen;
-  }
-  ngOnInit(): void {
+    }
     this.signalRSerice.startConnection();
     if (this.role === 'waiter') {
       this.subs.add(

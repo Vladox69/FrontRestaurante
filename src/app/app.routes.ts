@@ -16,7 +16,7 @@ export const routes: Routes = [
   ]},
   {path:"cook",component:Dashboard,children:[
     {path:"",component:CookMain},
-    {path:"order",component:CookOrder}
+    {path:"order/:id",component:CookOrder}
   ]},
   {path:"**",redirectTo:""}
 ];
