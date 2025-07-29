@@ -1,6 +1,7 @@
+export type OrderStatus='pending'|'in-progress' | 'delivered' | 'cancelled'
 export interface Order {
   id?:number;
-  status?:'pending'|'in-progress' | 'ready' | 'delivered' | 'cancelled';
+  status?:OrderStatus;
   total?:number;
   waiter_id?:number;
   table_id?:number;

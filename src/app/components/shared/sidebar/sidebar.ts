@@ -17,7 +17,6 @@ interface MenuItem{
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements OnInit, OnDestroy {
-  private subs = new Subscription();
   isOpen = true;
   isMobile = false;
   storeService = inject(StoreService);
@@ -36,26 +35,12 @@ export class Sidebar implements OnInit, OnDestroy {
           { path: 'orders', icon: '👥', label: 'Ordenes' },
         ]
       : [
-          { path: '/cook', icon: '📊', label: 'Dashboard' },
-          { path: 'order', icon: '🛍️', label: 'Orden' },
+          { path: '/cook', icon: '📊', label: 'Dashboard' }
         ];
     }
     this.signalRSerice.startConnection();
-    if (this.role === 'waiter') {
-      this.subs.add(
-        this.signalRSerice.waiterNotifications$.subscribe((data) => {
-          console.log(`Waiter Notification:`, data);
-        })
-      );
-    } else {
-      this.subs.add(
-        this.signalRSerice.cookNotifications$.subscribe((data) => {
-          console.log(`Cook Notification:`, data);
-        })
-      );
-    }
   }
   ngOnDestroy(): void {
-    this.subs.unsubscribe();
+    this.signalRSerice.stopConnection();
   }
 }

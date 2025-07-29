@@ -30,6 +30,14 @@ export class CookOrderSelected {
 
   updatedOrderItem(orderItem:OrderItem){
     this.orderItemResource.update((current)=>{return current.map((item)=>item.id===orderItem.id?orderItem:item)});
+    this.orderItemService.saveOrderItem(orderItem).subscribe({
+      next(value) {
+        console.log(value);
+      },
+      error(err) {
+        console.error(err);
+      },
+    })
   }
 
 }

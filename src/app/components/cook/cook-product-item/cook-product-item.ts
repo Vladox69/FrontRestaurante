@@ -1,12 +1,12 @@
 import { Component, computed, inject, input, output } from '@angular/core';
-import { OrderItem } from '../../../interfaces/data/order-item.interface';
+import { OrderItem, OrderItemStatus } from '../../../interfaces/data/order-item.interface';
 import { ProductService } from '../../../services/product-service';
-import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'cook-product-item',
-  imports: [FormsModule],
+  imports: [NgClass],
   templateUrl: './cook-product-item.html',
   styleUrl: './cook-product-item.css',
 })
@@ -37,8 +37,8 @@ export class CookProductItem {
     }).then((result) => {
       if (result.isConfirmed) {
         const newAuxiliarQuantity = this.orderItem().quantity_auxiliar!+1;
-        let newStatus:'pending'|'in-progress' | 'ready' | 'delivered' =  'pending';
-        if(this.orderItem().quantity==this.orderItem().quantity_auxiliar){
+        let newStatus:OrderItemStatus =  'pending';
+        if(this.orderItem().quantity==newAuxiliarQuantity){
           newStatus = 'ready';
         }else{
           newStatus = 'in-progress';
