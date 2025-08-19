@@ -37,7 +37,7 @@
         {{ orderSummary().status }}
       </span>
 
-      @if(orderSummary().status!='pending'){
+      @if(orderSummary().status=='in-progress'||orderSummary().status=='ready'){
       <button
         class="p-1 rounded-full bg-indigo-100 hover:bg-indigo-200 text-indigo-700 transition"
         (click)="changeOrderStatus()"

@@ -1,6 +1,7 @@
 <div
   class="bg-white rounded shadow p-4 flex flex-col items-start text-left h-[250] transform transition-transform duration-300 ease-in-out hover:scale-105 hover:shadow-lg"
   (click)="orderService.orderSelected.set(order())"
+  [ngClass]="{'scale-105 shadow-lg border-2 border-blue-300':isSelected()}"
 >
   <div class="flex gap-1">
     <h3>Orden # {{ order().id }}</h3>

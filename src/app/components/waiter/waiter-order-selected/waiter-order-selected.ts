@@ -1,19 +1,20 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { OrderService } from '../../../services/order-service';
 import { OrderItemService } from '../../../services/order-item-service';
 import { ProductService } from '../../../services/product-service';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { of } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { OrderItem } from '../../../interfaces/data/order-item.interface';
-import { WaiterProductItem } from "../waiter-product-item/waiter-product-item";
+import { WaiterProductItem } from '../waiter-product-item/waiter-product-item';
 
 @Component({
   selector: 'waiter-order-selected',
-  imports: [ WaiterProductItem],
+  imports: [WaiterProductItem],
   templateUrl: './waiter-order-selected.html',
-  styleUrl: './waiter-order-selected.css'
+  styleUrl: './waiter-order-selected.css',
 })
-export class WaiterOrderSelected {
+export class WaiterOrderSelected implements OnInit, OnDestroy {
+  private subs = new Subscription();
   orderService = inject(OrderService);
   orderItemService = inject(OrderItemService);
   productService = inject(ProductService);
@@ -28,8 +29,27 @@ export class WaiterOrderSelected {
     },
   });
 
-  updatedOrderItem(orderItem:OrderItem){
-    this.orderItemResource.update((current)=>{return current.map((item)=>item.id===orderItem.id?orderItem:item)});
+  ngOnInit(): void {
+    this.subs.add(
+      this.orderService.orderSignalR$.subscribe({
+        next: (value) => {
+          if(!value)return;
+          this.orderItemResource.update((current) => {
+            return current.map((item) =>
+              item.id === value?.id ? value : item
+            );
+          });
+        },
+      })
+    );
+  }
+
+  updatedOrderItem(orderItem: OrderItem) {
+    this.orderItemResource.update((current) => {
+      return current.map((item) =>
+        item.id === orderItem.id ? orderItem : item
+      );
+    });
     this.orderItemService.saveOrderItem(orderItem).subscribe({
       next(value) {
         console.log(value);
@@ -37,6 +57,9 @@ export class WaiterOrderSelected {
       error(err) {
         console.error(err);
       },
-    })
+    });
+  }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

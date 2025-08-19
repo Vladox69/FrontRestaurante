@@ -7,7 +7,7 @@ import { OrderBody } from '../interfaces/body/order-body.interface';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { OrderListResponse, OrderResponse } from '../interfaces/response/order-response.interface';
-import { map } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 import { StoreService } from './store-service';
 import { ProductService } from './product-service';
 
@@ -24,6 +24,7 @@ export class OrderService {
   order = signal<OrderItem[]>([]);
   table = signal<Table | null>(null);
   orderSelected = signal<Order|null>(null);
+  orderSignalR$ = new BehaviorSubject<OrderItem|null>(null);
   hasItems = computed(() => this.order().length > 0);
   hasOrders = computed(() => this.orders().length > 0);
   total = computed(() => {

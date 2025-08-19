@@ -16,5 +16,10 @@ export class CookOrderItem {
   tableService = inject(TableService);
   table = computed<Table>(()=> this.tableService.tables().find((t)=>t.id==this.order().table_id)!);
   orderService = inject(OrderService);
-
+  isSelected = computed<boolean>(() => {
+    if (!this.orderService.orderSelected()) {
+      return false;
+    }
+    return this.order().id==this.orderService.orderSelected()?.id;
+  });
 }
