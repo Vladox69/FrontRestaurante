@@ -1,1 +1,12 @@
-<p>waiter-main works!</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div class="b-gray-100 p-4 rounded shadow">
+    <h2 class="text-lg font-semibold mb-4">Ordenes</h2>
+    <waiter-order-list [orders]="orderResource.value()" />
+  </div>
+  <div class="b-gray-100 p-4 rounded shadow">
+    <h2 class="text-lg font-semibold mb-4">Productos</h2>
+    <div class="h-[500px] overflow-auto p-2">
+      <waiter-order-selected/>
+    </div>
+  </div>
+</div>

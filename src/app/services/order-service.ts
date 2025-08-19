@@ -4,7 +4,7 @@ import { Product } from '../interfaces/data/product.interface';
 import { Order } from '../interfaces/data/order.interface';
 import { Table } from '../interfaces/data/table.interface';
 import { OrderBody } from '../interfaces/body/order-body.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../environments/environment.development';
 import { OrderListResponse, OrderResponse } from '../interfaces/response/order-response.interface';
 import { map } from 'rxjs';
@@ -102,6 +102,15 @@ export class OrderService {
   getOrdersByBusinessId(id:number){
     return this._http.get<OrderListResponse>(`${this.url}business/${id}`).pipe(
       map(({ data }) => data)
+    )
+  }
+
+  getOrdersByStatusAndWaiterId(id:number,status:string){
+    let params = new HttpParams();
+    params=params.append("id",id);
+    params=params.append("status",status);
+    return this._http.get<OrderListResponse>(`${this.url}waiter-status`,{params}).pipe(
+      map(({data})=>data)
     )
   }
 

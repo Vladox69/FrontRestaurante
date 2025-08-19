@@ -1,0 +1,16 @@
+@if(orderService.orderSelected()==null){
+<div>Selecione una orden</div>
+}@else{
+<div>Orden seleccionada</div>
+@if(orderItemResource.isLoading()){
+<div>Cargando...</div>
+}@else {
+<!--  -->
+@for (orderItem of orderItemResource.value(); track
+orderItem.id) {
+<waiter-product-item [orderItem]="orderItem"  (updatedOrderItem)="updatedOrderItem($event)" />
+}
+<!--  -->
+}
+<!--  -->
+}
